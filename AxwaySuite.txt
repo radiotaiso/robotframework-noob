@@ -1,0 +1,182 @@
+*** Settings ***
+Suite Setup       Open browser and maximize window
+Suite Teardown    Close browser and quit
+Test Setup        CLFRLogin
+Test Teardown     User logout
+Library           Selenium2Library
+Variables         sensitiveAxVars.py
+
+*** Variables ***
+# GENERAL VARS
+${LoginUserName Id}    id=j_username    #Login username field
+${LoginPassword Id}    id=j_password    #Password Username Field
+${LoginButton Id}    xpath=//button[@name='submit']    #Login Button
+${HomeButton Id}    xpath=//span[@class='ubIconHome sprite']
+${success}        xpath=//div[@class='success']
+${LogoutButton}    xpath=//a[contains(text(),"Logout")]
+${Browser}        phantomjs
+${website}        http://192.168.0.20:8080/admin/public/login
+${logoutURL}      http://192.168.0.20:8080/admin/resources/j_spring_security_logout
+# NEW SURVEY VARS
+${newSurveyBtn}    xpath=//div[@style='position:absolute;right:220px;']//*[@id='addButton']
+${departmentId}    name=department
+${nameId}         name=name
+${facilityId}       id=selector_hierarchy_l2
+${themeId}        name=surveyTheme
+${descriptionId}    xpath=//*[@id="tinymce"]
+${saveBtn}        xpath=//input[@id="proceed"]
+# NEW PAGE VARS
+${newPageBtn}     xpath=//div[@id='emptyPages']//*[@id='addButton']
+${surveyTitleId}    xpath=//input[@name="title"]
+${surveyInstructionsId}    xpath=//textarea[@name="instructions"]
+# NEW QUESTIONS VARS
+${questionType}    identifier=type
+${newQuestionBtn}    xpath=//div[@style='height:60px;margin:0px;']//*[@id='addButton']
+${updateOptionsBtn}    //div[@class="questionLinks"]//a[contains(text(),"update options")]
+# FANCYBOXFRAME VARS
+${fancyboxFrame}    xpath=//iframe[@class='fancybox-iframe']
+
+*** Test Cases ***
+LoginCFL
+    [Tags]    LoginTest
+    [Setup]    CLFRLogin
+    Page should contain element    ${success}
+    [Teardown]    User logout
+
+SimpleSurvey
+    [Tags]    Current
+    [Setup]    CLFRLogin
+    newSurvey
+    newSurveyPage
+    newQuestYN
+    newQuestShortText
+    newQuestMultiCheckbox
+    [Teardown]    User logout
+
+*** Keywords ***
+Open browser and maximize window
+    Open Browser    ${website}    ${Browser}
+    Maximize browser window
+
+Close browser and quit
+    Close Browser
+
+User logout
+    Go to    ${logoutURL}
+    Wait Until Element Is Visible    ${LoginButton Id}
+    Page should contain element    ${LoginButton Id}
+
+CLFRLogin
+    [Tags]    CLFR    iTexico
+    Wait Until Element Is Visible    ${LoginButton Id}    10s
+    Input Text    ${LoginUserName Id}    ${adminUser}
+    Input Password    ${LoginPassword Id}    ${Password}
+    Click Element    ${LoginButton Id}
+
+newSurvey
+    Wait Until Element Is Visible    ${newSurveyBtn}    timeout=10
+    Click element    ${newSurveyBtn}
+    Sleep    5    reason=None
+    ${random}    Evaluate    random.randint(0, sys.maxint)    modules=random    modules=random, sys
+    ${surveytitle}    Catenate    SEPARATOR=-    ucoria Automation Test -    ${random}
+    Input text    ${nameId}    ${surveytitle}
+    Log    ${surveytitle}    level=INFO    html=False    console=True    repr=False
+    Log Many    survey title:     ${surveytitle}
+    Select From List    ${facilityId}    6
+    Select From List    ${themeId}    CELESTIAL_BLUE
+    Wait until element is visible    ${saveBtn}    7
+    Click element    ${saveBtn}
+    Page Should Contain    ${surveytitle}    loglevel=INFO
+    Page Should Contain    Celestial Blue    loglevel=INFO
+
+newSurveyPage
+    Wait until element is visible    ${NewPageBtn}
+    Click element    ${NewPageBtn}
+    Unselect frame
+    Wait until page contains element    ${fancyboxFrame}    5
+    Select frame    ${fancyboxFrame}
+    Wait until element is visible    ${surveyTitleId}    5    Timeout no vi el titulo
+    Input text    ${surveyTitleId}    Automated Page
+    Input text    ${surveyInstructionsId}    Automated instructions 1234
+    Click element    ${saveBtn}
+
+newQuestYN
+    sleep    3
+    #Wait for the page to load completely
+    Unselect frame
+    Click element    ${newQuestionBtn}
+    Wait until page contains element    ${fancyboxFrame}    5
+    Select frame    ${fancyboxFrame}
+    #Waits for the fancybox to load and selects it
+    Select from list    ${questionType}    BR
+    Select frame    //iframe[@id="_questionText_id_ifr"]
+    Input Text    ${descriptionId}    YES - NO Automated Question
+    #Selects the iframe inside the fancybox that contains the textfield of question description and writes
+    Unselect Frame
+    Select frame    ${fancyboxFrame}
+    #Return to the fancybox level
+    Click element    ${saveBtn}
+    Unselect Frame
+    #This last unselect is to make sure no iframe is selected maybe it's not even necessary but you never know
+
+newQuestShortText
+    Sleep    3
+    #Wait for the page to load completely
+    Unselect frame
+    Click element    ${newQuestionBtn}
+    Wait until page contains element    ${fancyboxFrame}    5
+    Select frame    ${fancyboxFrame}
+    Sleep    3
+    #Waits for the fancybox to load and selects it
+    Select from list    ${questionType}    ST
+    Select frame    //iframe[@id="_questionText_id_ifr"]
+    Input Text    ${descriptionId}    Short Text Automated Question
+    #Selects the iframe inside the fancybox that contains the textfield of question description and writes
+    Unselect Frame
+    Select frame    ${fancyboxFrame}
+    #Return to the fancybox level
+    Click element    ${saveBtn}
+    Unselect Frame
+    #This last unselect is to make sure no iframe is selected maybe it's not even necessary but you never know
+
+newQuestMultiCheckbox
+    Sleep    3
+    #Wait for the page to load completely
+    Unselect frame
+    Click element    ${newQuestionBtn}
+    Wait until page contains element    ${fancyboxFrame}    5
+    Select frame    ${fancyboxFrame}
+    Sleep    3
+    #Waits for the fancybox to load and selects it
+    Select from list    ${questionType}    MC
+    Select frame    //iframe[@id="_questionText_id_ifr"]
+    Input Text    ${descriptionId}    Multiple checkbox Automated Question
+    #Selects the iframe inside the fancybox that contains the textfield of question description and writes
+    Unselect Frame
+    Select frame    ${fancyboxFrame}
+    #Return to the fancybox level
+    Click element    ${saveBtn}
+    Sleep    3    reason=not sure why
+    Unselect Frame
+    #This last unselect is to make sure no iframe is selected maybe it's not even necessary but you never know
+    Click Element    ${updateOptionsBtn}
+    Sleep    3    need to see the Textfield
+    Wait until page contains element    ${fancyboxFrame}    5
+    Select frame    ${fancyboxFrame}
+    @{textValue}    Get Webelements    //tr//input[@maxlength=8]
+    @{textFields}    Get Webelements    //tr//input[@maxlength=250]
+    ${count}=    Set Variable    1
+    :FOR     ${value}    IN   @{textValue}
+    \    Input Text    ${value}    ${count}
+    \    ${count}=    Evaluate    ${count}+1
+    ${count}=    Set Variable    1
+    :FOR     ${field}    IN   @{textFields}
+    \    Input Text    ${field}    ${count}-Field
+    \    ${count}=    Evaluate    ${count}+1
+    Click element    ${saveBtn}
+    Sleep    5
+
+    # Windows
+    # robot --include Current CLFSuite.txt
+    # Linux
+    # python -m robot --include Current CLFSuite.txt
