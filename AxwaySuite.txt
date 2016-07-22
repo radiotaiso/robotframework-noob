@@ -26,7 +26,6 @@ Open browser and maximize window
 Close browser and quit
     Close Browser
 
-
     # Windows
     # robot --include Current CLFSuite.txt
     # Linux
