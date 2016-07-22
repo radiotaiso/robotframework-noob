@@ -1,8 +1,8 @@
 *** Settings ***
 Suite Setup       Open browser and maximize window
 Suite Teardown    Close browser and quit
-Test Setup        CLFRLogin
-Test Teardown     User logout
+#Test Setup        CLFRLogin
+#Test Teardown     User logout
 Library           Selenium2Library
 Variables         sensitiveAxVars.py
 
@@ -37,21 +37,9 @@ ${updateOptionsBtn}    //div[@class="questionLinks"]//a[contains(text(),"update 
 ${fancyboxFrame}    xpath=//iframe[@class='fancybox-iframe']
 
 *** Test Cases ***
-LoginCFL
-    [Tags]    LoginTest
-    [Setup]    CLFRLogin
-    Page should contain element    ${success}
-    [Teardown]    User logout
-
 SimpleSurvey
-    [Tags]    Current
-    [Setup]    CLFRLogin
-    newSurvey
-    newSurveyPage
-    newQuestYN
-    newQuestShortText
-    newQuestMultiCheckbox
-    [Teardown]    User logout
+    [Tags]    Tag
+
 
 *** Keywords ***
 Open browser and maximize window
