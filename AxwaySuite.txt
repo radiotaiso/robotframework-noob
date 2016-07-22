@@ -15,8 +15,7 @@ ${LogoutButton}    xpath=//a[contains(text(),"Logout")]
 ${Browser}        firefox
 
 *** Test Cases ***
-SimpleSurvey
-    [Tags]    Tag
+
 
 *** Keywords ***
 Open browser and maximize window
