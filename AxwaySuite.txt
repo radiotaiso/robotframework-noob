@@ -13,29 +13,10 @@ ${HomeButton Id}    xpath=//span[@class='ubIconHome sprite']
 ${success}        xpath=//div[@class='success']
 ${LogoutButton}    xpath=//a[contains(text(),"Logout")]
 ${Browser}        firefox
-# NEW SURVEY VARS
-${newSurveyBtn}    xpath=//div[@style='position:absolute;right:220px;']//*[@id='addButton']
-${departmentId}    name=department
-${nameId}         name=name
-${facilityId}       id=selector_hierarchy_l2
-${themeId}        name=surveyTheme
-${descriptionId}    xpath=//*[@id="tinymce"]
-${saveBtn}        xpath=//input[@id="proceed"]
-# NEW PAGE VARS
-${newPageBtn}     xpath=//div[@id='emptyPages']//*[@id='addButton']
-${surveyTitleId}    xpath=//input[@name="title"]
-${surveyInstructionsId}    xpath=//textarea[@name="instructions"]
-# NEW QUESTIONS VARS
-${questionType}    identifier=type
-${newQuestionBtn}    xpath=//div[@style='height:60px;margin:0px;']//*[@id='addButton']
-${updateOptionsBtn}    //div[@class="questionLinks"]//a[contains(text(),"update options")]
-# FANCYBOXFRAME VARS
-${fancyboxFrame}    xpath=//iframe[@class='fancybox-iframe']
 
 *** Test Cases ***
 SimpleSurvey
     [Tags]    Tag
-
 
 *** Keywords ***
 Open browser and maximize window
