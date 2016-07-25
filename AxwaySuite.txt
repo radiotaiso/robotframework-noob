@@ -13,9 +13,15 @@ ${HomeButton Id}    xpath=//span[@class='ubIconHome sprite']
 ${success}        xpath=//div[@class='success']
 ${LogoutButton}    xpath=//a[contains(text(),"Logout")]
 ${Browser}        firefox
+# Location VARS
+${pricebooksNavBtn}   xpath=//div[@class='nav-actions']//a[contains(text(),"Price Books")]
+${sectionTitle}    xpath=//h2[@class='menu-action']
 
 *** Test Cases ***
-
+NewPricebook
+    [Tags]    PriceBook
+    Click Element    ${pricebooksNavBtn}
+    Element Should Contain    ${sectionTitle}    Price Books
 
 *** Keywords ***
 Open browser and maximize window
